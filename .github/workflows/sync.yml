@@ -1,45 +1,13 @@
-name: Sync YouTube Playlist (Simple)
+name: Debug Workflow
 
 on:
   workflow_dispatch:
 
 jobs:
-  build:
+  debug:
     runs-on: ubuntu-latest
 
     steps:
-      - name: Checkout repo
-        uses: actions/checkout@v4
-
-      - name: Install tools
-        run: pip install yt-dlp jq
-
-      - name: Generate library.json
-        run: |
-          echo '{"tracks":[' > library.json
-
-          URL=$(jq -r '.playlists[0].url' playlists.json)
-
-          yt-dlp --flat-playlist --dump-json "$URL" | while read -r line; do
-            ID=$(echo "$line" | jq -r '.id')
-            TITLE=$(echo "$line" | jq -r '.title')
-
-            if [ "$ID" != "null" ] && [ "$ID" != "" ]; then
-              echo "{\"title\":\"$TITLE\",\"id\":\"$ID\"}," >> library.json
-            fi
-          done
-
-          sed -i '$ s/,$//' library.json
-          echo ']}' >> library.json
-
-      - name: Commit changes
-      run: |
-        git config user.name "github-actions"
-        git config user.email "github-actions@github.com"
-
-          git add library.json
-
-          git diff --cached --quiet && echo "No changes" && exit 0
-
-          git commit -m "update library"
-          git push origin HEAD:${GITHUB_REF#refs/heads/}
+      
+name: Print message
+      run: echo "Workflow is detected and running"
