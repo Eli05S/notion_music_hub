@@ -1,0 +1,54 @@
+name: Sync YouTube Playlists
+
+on:
+  schedule:
+    - cron: "0 */6 * * *"   # every 6 hours
+  workflow_dispatch:
+
+jobs:
+  build:
+    runs-on: ubuntu-latest
+
+    steps:
+      - name: Checkout repo
+        uses: actions/checkout@v4
+
+      - name: Install yt-dlp
+        run: |
+          sudo apt update
+          sudo apt install -y python3-pip
+          pip install yt-dlp
+
+      - name: Generate library.json
+        run: |
+          echo "{" > library.json
+          echo "\"tracks\": [" >> library.json
+
+          first=true
+
+          for url in $(jq -r '.playlists[].url' playlists.json); do
+
+            yt-dlp --flat-playlist --dump-json "$url" | \
+            jq -c '{title: .title, id: .id}' | \
+            while read line; do
+
+              if [ "$first" = true ]; then
+                first=false
+              else
+                echo "," >> library.json
+              fi
+
+              echo "{\"title\": $(echo $line | jq -r '.title' | jq -R .), \"id\": \"$(echo $line | jq -r '.id')\"}" >> library.json
+
+            done
+          done
+
+          echo "]}" >> library.json
+
+      - name: Commit changes
+        run: |
+          git config user.name "github-actions"
+          git config user.email "actions@github.com"
+          git add library.json
+          git commit -m "update library" || exit 0
+          git push
