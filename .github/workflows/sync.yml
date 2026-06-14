@@ -1,9 +1,7 @@
-name: Sync YouTube Playlist (Stable)
+name: Sync YouTube Playlist (Simple)
 
 on:
   workflow_dispatch:
-  schedule:
-    - cron: "0 */6 * * *"
 
 jobs:
   build:
@@ -13,20 +11,20 @@ jobs:
       - name: Checkout repo
         uses: actions/checkout@v4
 
-      - name: Install yt-dlp
-        run: pip install yt-dlp
+      - name: Install tools
+        run: pip install yt-dlp jq
 
       - name: Generate library.json
         run: |
           echo '{"tracks":[' > library.json
 
-          URL=$(grep -o '"url": *"[^"]*"' playlists.json | head -n1 | cut -d'"' -f4)
+          URL=$(jq -r '.playlists[0].url' playlists.json)
 
           yt-dlp --flat-playlist --dump-json "$URL" | while read -r line; do
             ID=$(echo "$line" | jq -r '.id')
             TITLE=$(echo "$line" | jq -r '.title')
 
-            if [ "$ID" != "null" ]; then
+            if [ "$ID" != "null" ] && [ "$ID" != "" ]; then
               echo "{\"title\":\"$TITLE\",\"id\":\"$ID\"}," >> library.json
             fi
           done
