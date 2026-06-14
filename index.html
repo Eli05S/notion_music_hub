@@ -1,1 +1,36 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notion Music Hub</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+  <div class="container">
+
+    <div class="sidebar">
+      <h2>Playlist</h2>
+      <div id="videoList">Loading...</div>
+    </div>
+
+    <div class="main">
+      <div id="playerWrapper">
+        <iframe
+          id="player"
+          src=""
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <div id="nowPlaying">Select a song 🎵</div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
