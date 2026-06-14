@@ -1,4 +1,4 @@
-name: Sync YouTube Playlist
+name: Sync YouTube Playlist (Stable)
 
 on:
   workflow_dispatch:
@@ -20,14 +20,18 @@ jobs:
         run: |
           echo '{"tracks":[' > library.json
 
-          yt-dlp --flat-playlist --dump-json "https://www.youtube.com/playlist?list=$(jq -r '.playlists[0].url' playlists.json | sed 's/.*list=//')" \
-          | jq -c '{title: .title, id: .id}' \
-          | head -n 100 \
-          | awk '{
-              if (NR > 1) printf ",";
-              printf "{\"title\":%s,\"id\":%s}", $0
-            }' >> library.json
+          URL=$(grep -o '"url": *"[^"]*"' playlists.json | head -n1 | cut -d'"' -f4)
 
+          yt-dlp --flat-playlist --dump-json "$URL" | while read -r line; do
+            ID=$(echo "$line" | jq -r '.id')
+            TITLE=$(echo "$line" | jq -r '.title')
+
+            if [ "$ID" != "null" ]; then
+              echo "{\"title\":\"$TITLE\",\"id\":\"$ID\"}," >> library.json
+            fi
+          done
+
+          sed -i '$ s/,$//' library.json
           echo ']}' >> library.json
 
       - name: Commit changes
