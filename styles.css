@@ -1,1 +1,96 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Notion Music Hub</title>
+  <link rel="stylesheet" href="styles.css">
+</head>
+<body>
 
+  <div class="container">
+
+    <div class="sidebar">
+      <h2>Playlist</h2>
+      <div id="videoList">Loading...</div>
+    </div>
+
+    <div class="main">
+      <div id="playerWrapper">
+        <iframe
+          id="player"
+          src=""
+          frameborder="0"
+          allow="autoplay; encrypted-media"
+          allowfullscreen>
+        </iframe>
+      </div>
+
+      <div id="nowPlaying">Select a song 🎵</div>
+    </div>
+
+  </div>
+
+  <script src="app.js"></script>
+</body>
+</html>
+body {
+  margin: 0;
+  font-family: Arial, sans-serif;
+  background: #0f0f0f;
+  color: white;
+}
+
+.container {
+  display: flex;
+  height: 100vh;
+}
+
+/* Sidebar
+.sidebar {
+  width: 35%;
+  background: #181818;
+  padding: 15px;
+  overflow-y: auto;
+}
+
+.sidebar h2 {
+  margin-top: 0;
+}
+
+.video-item {
+  padding: 10px;
+  margin-bottom: 8px;
+  background: #242424;
+  border-radius: 6px;
+  cursor: pointer;
+  transition: 0.2s;
+}
+
+.video-item:hover {
+  background: #333;
+}
+
+/ Main player*
+.main {
+  flex: 1;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+}
+
+#playerWrapper {
+  width: 80%;
+  aspect-ratio: 16/9;
+}
+
+iframe {
+  width: 100%;
+  height: 100%;
+}
+
+#nowPlaying {
+  margin-top: 15px;
+  color: #aaa;
+}
